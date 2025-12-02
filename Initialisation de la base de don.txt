@@ -1,0 +1,79 @@
+-- Initialisation de la base de données
+-- Si la base existe déjà, on la supprime pour repartir à zéro (utile pour les tests)
+DROP DATABASE IF EXISTS cine_nsi;
+CREATE DATABASE cine_nsi CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE cine_nsi;
+
+-- ==========================================
+-- 1. Création de la table REALISATEUR
+-- ==========================================
+CREATE TABLE Realisateur (
+    id_real INT AUTO_INCREMENT PRIMARY KEY,
+    nom VARCHAR(50) NOT NULL,
+    prenom VARCHAR(50) NOT NULL,
+    nation VARCHAR(50)
+) ENGINE=InnoDB;
+
+-- Insertion des données dans Realisateur
+INSERT INTO Realisateur (nom, prenom, nation) VALUES 
+('Nolan', 'Christopher', 'Royaume-Uni'),
+('Spielberg', 'Steven', 'USA'),
+('Villeneuve', 'Denis', 'Canada'),
+('Miyazaki', 'Hayao', 'Japon'),
+('Gerwig', 'Greta', 'USA'),
+('Yates', 'David', 'Royaume-Uni'); -- Ajouté pour l'exercice Harry Potter
+
+-- ==========================================
+-- 2. Création de la table FILM
+-- ==========================================
+CREATE TABLE Film (
+    id_film INT AUTO_INCREMENT PRIMARY KEY,
+    titre VARCHAR(100) NOT NULL,
+    annee INT NOT NULL,
+    genre VARCHAR(50),
+    id_real INT,
+    -- Définition de la clé étrangère : lie id_real de Film à id_real de Realisateur
+    CONSTRAINT fk_film_realisateur FOREIGN KEY (id_real) REFERENCES Realisateur(id_real)
+) ENGINE=InnoDB;
+
+-- Insertion des données dans Film
+-- Note : Les ID des réalisateurs correspondent à l'ordre d'insertion ci-dessus
+-- 1=Nolan, 2=Spielberg, 3=Villeneuve, 4=Miyazaki, 5=Gerwig, 6=Yates
+
+INSERT INTO Film (titre, annee, genre, id_real) VALUES 
+('Inception', 2010, 'Science-Fiction', 1),
+('Interstellar', 2014, 'Science-Fiction', 1),
+('Jurassic Park', 1993, 'Aventure', 2),
+('Ready Player One', 2018, 'Science-Fiction', 2),
+('Dune', 2021, 'Science-Fiction', 3),
+('Le Voyage de Chihiro', 2001, 'Animation', 4),
+('Barbie', 2023, 'Comédie', 5),
+('Harry Potter et l''Ordre du Phénix', 2007, 'Fantastique', 6),
+('Harry Potter et les Reliques de la Mort', 2010, 'Fantastique', 6);
+
+-- ==========================================
+-- 3. Création de la table SEANCE
+-- ==========================================
+CREATE TABLE Seance (
+    id_seance INT AUTO_INCREMENT PRIMARY KEY,
+    date_heure DATETIME NOT NULL,
+    salle INT NOT NULL,
+    id_film INT,
+    -- Définition de la clé étrangère : lie id_film de Seance à id_film de Film
+    CONSTRAINT fk_seance_film FOREIGN KEY (id_film) REFERENCES Film(id_film)
+) ENGINE=InnoDB;
+
+-- Insertion des données dans Seance
+-- On met des dates récentes et futures pour tester les tris chronologiques
+
+INSERT INTO Seance (date_heure, salle, id_film) VALUES 
+('2023-10-15 14:00:00', 1, 1), -- Inception
+('2023-10-15 18:30:00', 2, 5), -- Dune
+('2023-10-15 21:00:00', 1, 2), -- Interstellar
+('2023-10-16 10:00:00', 3, 6), -- Chihiro
+('2023-10-16 20:00:00', 1, 7), -- Barbie
+('2024-01-01 14:00:00', 2, 8), -- Harry Potter 5
+('2024-01-01 17:00:00', 2, 9), -- Harry Potter 7
+('2024-05-20 20:30:00', 4, 3); -- Jurassic Park
+
+-- Fin du script
