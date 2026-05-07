@@ -1,0 +1,1720 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recherche Textuelle — NSI Terminale</title>
+<link href="https://fonts.googleapis.com/css2?family=Cabinet+Grotesk:wght@400;500;700;800;900&family=Literata:ital,wght@0,300;0,400;0,500;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════════
+   ROOT & RESET
+══════════════════════════════════════ */
+:root {
+  --bg:        #faf7f2;
+  --bg2:       #f3ede3;
+  --bg3:       #e8dfce;
+  --ink:       #1c1a16;
+  --ink2:      #4a4538;
+  --ink3:      #9a9080;
+  --border:    #d8cfc0;
+  --red:       #c0392b;
+  --red-bg:    #fdecea;
+  --red-bdr:   #f5b8b3;
+  --green:     #1a7a4a;
+  --green-bg:  #eaf6ee;
+  --green-bdr: #9dd4b0;
+  --blue:      #1a5fa8;
+  --blue-bg:   #eaf1fb;
+  --blue-bdr:  #93bce8;
+  --amber:     #a05c00;
+  --amber-bg:  #fef6e4;
+  --amber-bdr: #f5d185;
+  --purple:    #6b3fa0;
+  --purple-bg: #f3edfb;
+  --purple-bdr:#c9a8ee;
+  --accent:    #c0392b;
+  --radius:    12px;
+  --mono:      'JetBrains Mono', monospace;
+  --serif:     'Literata', Georgia, serif;
+  --sans:      'Cabinet Grotesk', sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 16px;
+  line-height: 1.75;
+  min-height: 100vh;
+}
+
+/* ══════════════════════════════════════
+   HEADER
+══════════════════════════════════════ */
+.header {
+  background: var(--ink);
+  color: var(--bg);
+  padding: 3rem 2rem 2.5rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.header::before {
+  content:'';
+  position:absolute; inset:0;
+  background: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 20px,
+    rgba(255,255,255,.03) 20px,
+    rgba(255,255,255,.03) 21px
+  );
+  pointer-events:none;
+}
+.header-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--ink3);
+  margin-bottom: .75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .5rem;
+}
+.header-label::before,
+.header-label::after {
+  content:'';
+  width:32px; height:1px;
+  background: #444;
+}
+.header h1 {
+  font-family: var(--sans);
+  font-size: clamp(2rem, 5.5vw, 3.2rem);
+  font-weight: 900;
+  line-height: 1.1;
+  color: #fff;
+  margin-bottom: .6rem;
+}
+.header h1 em {
+  font-style: normal;
+  color: #f5b8b3;
+  border-bottom: 3px solid var(--red);
+}
+.header p {
+  font-size: 15px;
+  color: #aaa;
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+/* ══════════════════════════════════════
+   NAV
+══════════════════════════════════════ */
+.nav {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--ink);
+  border-bottom: 1px solid #333;
+  display: flex; overflow-x: auto;
+  scrollbar-width: none;
+}
+.nav::-webkit-scrollbar { display: none; }
+.nav-btn {
+  flex-shrink: 0;
+  background: none; border: none;
+  color: #888;
+  font-family: var(--sans);
+  font-size: 13px; font-weight: 500;
+  padding: 13px 18px;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all .18s;
+  white-space: nowrap;
+  letter-spacing: .02em;
+}
+.nav-btn:hover { color: #ddd; }
+.nav-btn.active { color: #fff; border-bottom-color: var(--red); }
+
+/* ══════════════════════════════════════
+   LAYOUT
+══════════════════════════════════════ */
+.content { max-width: 840px; margin: 0 auto; padding: 2.5rem 1.5rem 5rem; }
+.section { display: none; animation: fadeUp .3s ease; }
+.section.active { display: block; }
+@keyframes fadeUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+
+/* ══════════════════════════════════════
+   TYPOGRAPHY
+══════════════════════════════════════ */
+.sec-title {
+  font-family: var(--sans);
+  font-size: clamp(1.5rem,4vw,2rem);
+  font-weight: 900;
+  color: var(--ink);
+  margin-bottom: .25rem;
+  line-height: 1.2;
+}
+.sec-title span { color: var(--red); }
+.sec-sub {
+  font-size: 14px;
+  color: var(--ink3);
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border);
+  font-family: var(--sans);
+}
+h3 {
+  font-family: var(--sans);
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--ink);
+  margin-bottom: .5rem;
+  display: flex; align-items: center; gap: .45rem;
+}
+
+/* ══════════════════════════════════════
+   CARDS
+══════════════════════════════════════ */
+.card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.4rem 1.6rem;
+  margin-bottom: 1.25rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,.05);
+}
+.card-ruled {
+  border-top: 3px solid var(--ink);
+}
+
+/* CALLOUT BOXES */
+.box {
+  border-radius: 10px;
+  padding: .9rem 1.1rem;
+  margin-bottom: 1rem;
+  font-size: 14.5px;
+  line-height: 1.6;
+}
+.box strong { font-weight: 600; }
+.box-info   { background: var(--blue-bg);   border: 1px solid var(--blue-bdr);   color: var(--blue);   }
+.box-ok     { background: var(--green-bg);  border: 1px solid var(--green-bdr);  color: var(--green);  }
+.box-warn   { background: var(--amber-bg);  border: 1px solid var(--amber-bdr);  color: var(--amber);  }
+.box-danger { background: var(--red-bg);    border: 1px solid var(--red-bdr);    color: var(--red);    }
+.box-purple { background: var(--purple-bg); border: 1px solid var(--purple-bdr); color: var(--purple); }
+
+/* ══════════════════════════════════════
+   CODE
+══════════════════════════════════════ */
+pre, code { font-family: var(--mono); font-size: 13px; }
+.code-block {
+  background: #1c1a16;
+  border-radius: 10px;
+  padding: 1.2rem 1.4rem;
+  overflow-x: auto;
+  margin: 1rem 0;
+  line-height: 1.9;
+  color: #d4cfc5;
+}
+.ck  { color: #e07b6a; }   /* keyword  */
+.cf  { color: #7ec8e3; }   /* function */
+.cs  { color: #b5d99c; }   /* string   */
+.cn  { color: #f5c842; }   /* number   */
+.cc  { color: #666052; font-style:italic; }  /* comment  */
+.chl { background: rgba(240,200,80,.12); border-radius:3px; padding:1px 2px; }
+
+/* ══════════════════════════════════════
+   BUTTONS
+══════════════════════════════════════ */
+.btn {
+  background: none;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  color: var(--ink2);
+  font-family: var(--sans);
+  font-size: 13.5px; font-weight: 600;
+  padding: 8px 18px;
+  cursor: pointer;
+  transition: all .15s;
+  display: inline-flex; align-items: center; gap: .35rem;
+}
+.btn:hover { border-color: var(--ink); background: var(--bg2); }
+.btn-dark { background: var(--ink); color: #fff; border-color: var(--ink); }
+.btn-dark:hover { background: #333; }
+.btn-red  { background: var(--red); color: #fff; border-color: var(--red); }
+.btn-red:hover { background: #a52d21; }
+.btn-green { background: var(--green); color: #fff; border-color: var(--green); }
+.btn-green:hover { background: #156040; }
+.btn-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 1rem; }
+
+/* ══════════════════════════════════════
+   ANALOGY GRID
+══════════════════════════════════════ */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+@media(max-width:560px) { .two-col { grid-template-columns: 1fr; } }
+.analogy-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem 1.1rem;
+}
+.analogy-card .alabel {
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  margin-bottom: .4rem;
+}
+.analogy-card p { font-size: 14px; color: var(--ink2); }
+
+/* ══════════════════════════════════════
+   SEARCH VISUALIZER
+══════════════════════════════════════ */
+.text-display {
+  font-family: var(--mono);
+  font-size: 15px;
+  letter-spacing: .04em;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem 1.2rem;
+  overflow-x: auto;
+  white-space: nowrap;
+  line-height: 2.2;
+  min-height: 60px;
+  margin: .75rem 0;
+}
+.ch { display: inline-block; padding: 2px 4px; border-radius: 4px; transition: all .3s; position: relative; }
+.ch-curr   { background: #f5c842; color: #1c1a16; font-weight: 600; box-shadow: 0 2px 6px rgba(240,200,80,.4); }
+.ch-match  { background: var(--green); color: #fff; font-weight: 600; }
+.ch-found  { background: #1a7a4a; color: #fff; font-weight: 600; }
+.ch-bad    { background: var(--red); color: #fff; font-weight: 600; }
+.ch-skip   { background: var(--blue); color: #fff; }
+.ch-window { outline: 2px dashed var(--blue); outline-offset: 2px; border-radius: 3px; background: var(--blue-bg); }
+
+.pattern-display {
+  font-family: var(--mono);
+  font-size: 15px;
+  background: var(--ink);
+  color: #fff;
+  border-radius: 8px;
+  padding: .6rem 1rem;
+  display: inline-flex;
+  gap: 2px;
+  margin: .5rem 0;
+}
+.pch { display: inline-block; padding: 3px 7px; border-radius: 4px; transition: all .3s; }
+.pch-curr  { background: #f5c842; color: #1c1a16; font-weight:700; }
+.pch-match { background: var(--green); color: #fff; font-weight:700; }
+.pch-bad   { background: var(--red); color: #fff; }
+
+/* EXPLANATION */
+.expl-box {
+  background: var(--bg2);
+  border-left: 4px solid var(--ink);
+  border-radius: 0 8px 8px 0;
+  padding: .85rem 1.1rem;
+  font-size: 14px;
+  color: var(--ink2);
+  min-height: 48px;
+  margin: .75rem 0;
+  line-height: 1.6;
+  font-family: var(--sans);
+  transition: border-color .3s;
+}
+.expl-box.ok   { border-color: var(--green); }
+.expl-box.bad  { border-color: var(--red); }
+.expl-box.info { border-color: var(--blue); }
+
+/* STEP PROGRESS */
+.step-bar {
+  display: flex; gap: 4px; align-items: center;
+  flex-wrap: wrap; margin-bottom: 1rem;
+}
+.step-dot {
+  width: 9px; height: 9px; border-radius: 50%;
+  background: var(--border);
+  transition: background .3s;
+}
+.step-dot.done   { background: var(--green); }
+.step-dot.active { background: var(--red); box-shadow: 0 0 0 3px rgba(192,57,43,.15); }
+.step-lbl { font-family: var(--mono); font-size: 12px; color: var(--ink3); margin-left: 6px; }
+
+/* ══════════════════════════════════════
+   COUNTER
+══════════════════════════════════════ */
+.counters {
+  display: flex; gap: 10px; flex-wrap: wrap; margin: .75rem 0;
+}
+.counter {
+  flex: 1; min-width: 110px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: .9rem 1rem;
+  text-align: center;
+}
+.counter .lbl { font-size: 11px; font-family: var(--sans); color: var(--ink3); margin-bottom: .3rem; text-transform: uppercase; letter-spacing: .06em; }
+.counter .val { font-family: var(--mono); font-size: 1.6rem; font-weight: 600; transition: color .3s; }
+
+/* ══════════════════════════════════════
+   TABLE
+══════════════════════════════════════ */
+.data-table { width: 100%; border-collapse: collapse; font-size: 13.5px; font-family: var(--sans); }
+.data-table th { background: var(--bg3); border: 1px solid var(--border); padding: 8px 12px; font-weight: 700; text-align: left; }
+.data-table td { border: 1px solid var(--border); padding: 8px 12px; color: var(--ink2); }
+.data-table tr:hover td { background: var(--bg2); }
+.td-good { color: var(--green); font-weight: 600; }
+.td-bad  { color: var(--red); }
+
+/* ══════════════════════════════════════
+   BMH TABLE (for Boyer-Moore-Horspool)
+══════════════════════════════════════ */
+.bmh-table {
+  display: flex; gap: 0; flex-wrap: wrap; margin: .75rem 0;
+}
+.bmh-cell {
+  border: 1px solid var(--border);
+  min-width: 52px;
+  padding: 8px 6px;
+  text-align: center;
+  font-family: var(--mono);
+  background: #fff;
+  transition: all .3s;
+}
+.bmh-cell .ch { font-size: 15px; font-weight: 600; }
+.bmh-cell .skip { font-size: 11px; color: var(--ink3); margin-top: 3px; }
+.bmh-cell.active { background: #f5c842; color: var(--ink); border-color: #d4a800; }
+.bmh-cell.use   { background: var(--green-bg); border-color: var(--green-bdr); }
+
+/* ══════════════════════════════════════
+   QUIZ
+══════════════════════════════════════ */
+.quiz-q {
+  font-family: var(--sans);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 1.1rem;
+  line-height: 1.4;
+}
+.quiz-opt {
+  width: 100%; text-align: left;
+  background: var(--bg2);
+  border: 1.5px solid var(--border);
+  border-radius: 9px;
+  padding: 10px 14px;
+  margin-bottom: 7px;
+  font-size: 14.5px;
+  color: var(--ink);
+  font-family: var(--sans);
+  cursor: pointer;
+  transition: all .15s;
+  display: block;
+}
+.quiz-opt:hover:not(:disabled) { border-color: var(--ink); background: #fff; }
+.quiz-opt.correct { background: var(--green-bg); border-color: var(--green-bdr); color: var(--green); font-weight: 600; }
+.quiz-opt.wrong   { background: var(--red-bg);   border-color: var(--red-bdr);   color: var(--red); }
+.q-feedback {
+  font-size: 14px; line-height: 1.55;
+  padding: .8rem 1rem; border-radius: 8px; margin: .6rem 0;
+  font-family: var(--sans);
+}
+.q-feedback.ok  { background: var(--green-bg); color: var(--green); border-left: 3px solid var(--green); }
+.q-feedback.bad { background: var(--red-bg);   color: var(--red);   border-left: 3px solid var(--red); }
+.score-wrap { text-align: center; padding: 2rem 1rem; }
+.score-big { font-family: var(--sans); font-size: 3.5rem; font-weight: 900; }
+.score-msg { font-size: 15px; color: var(--ink2); margin-top: .4rem; font-family: var(--sans); }
+.prog-wrap { background: var(--bg3); border-radius: 20px; height: 5px; margin-bottom: 1.2rem; overflow: hidden; }
+.prog-fill { height: 100%; background: var(--red); border-radius: 20px; transition: width .4s ease; }
+
+/* ══════════════════════════════════════
+   ACTIVITY INPUT
+══════════════════════════════════════ */
+.act-input {
+  width: 100%;
+  background: var(--bg2);
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  padding: 9px 12px;
+  font-family: var(--mono);
+  font-size: 14px;
+  color: var(--ink);
+  outline: none;
+  transition: border-color .2s;
+}
+.act-input:focus { border-color: var(--ink); }
+.act-label { font-family: var(--sans); font-size: 13px; color: var(--ink3); margin-bottom: .35rem; display: block; }
+
+/* NAIF LIVE VISUALIZER */
+.live-wrap {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.1rem 1.3rem;
+  margin: .75rem 0;
+}
+.live-row {
+  font-family: var(--mono);
+  font-size: 14px;
+  line-height: 2.2;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+.sp { display: inline-block; width: 10.5px; }
+
+/* KMP failure table */
+.fail-row {
+  display: flex; gap: 0; margin: .5rem 0;
+}
+.fail-cell {
+  border: 1px solid var(--border);
+  min-width: 44px; padding: 7px 4px;
+  text-align: center;
+  font-family: var(--mono);
+  font-size: 13px;
+  background: #fff;
+  transition: all .3s;
+}
+.fail-cell.hdr  { background: var(--bg3); font-weight: 700; font-size: 11px; color: var(--ink3); }
+.fail-cell.calc { background: #f5c842; }
+.fail-cell.done { background: var(--green-bg); color: var(--green); }
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════ HEADER ═══════════════════ -->
+<div class="header">
+  <div class="header-label">NSI · Terminale · Algorithmique</div>
+  <h1>Recherche<br><em>Textuelle</em></h1>
+  <p>Comprendre comment un ordinateur trouve un mot dans un texte — expliqué pas à pas, avec des analogies et des animations.</p>
+</div>
+
+<nav class="nav" id="main-nav">
+  <button class="nav-btn active" onclick="goTo('s0',0)">📖 C'est quoi ?</button>
+  <button class="nav-btn" onclick="goTo('s1',1)">🐌 Algo naïf</button>
+  <button class="nav-btn" onclick="goTo('s2',2)">🚀 Boyer-Moore-H</button>
+  <button class="nav-btn" onclick="goTo('s3',3)">⚙️ KMP</button>
+  <button class="nav-btn" onclick="goTo('s4',4)">💻 Code Python</button>
+  <button class="nav-btn" onclick="goTo('s5',5)">✏️ Activités</button>
+  <button class="nav-btn" onclick="goTo('s6',6)">🎯 Quiz final</button>
+</nav>
+
+<div class="content">
+
+<!-- ═══════════════════════════════════════════
+     SECTION 0 — INTRODUCTION
+════════════════════════════════════════════ -->
+<div id="s0" class="section active">
+  <div class="sec-title">La recherche textuelle, <span>c'est quoi ?</span></div>
+  <p class="sec-sub">Programme officiel NSI Terminale — thème "Algorithmique" : algorithmes de recherche de motif.</p>
+
+  <div class="card card-ruled">
+    <h3>🔍 Un problème du quotidien</h3>
+    <p style="color:var(--ink2);font-size:15px">Tu utilises la recherche textuelle chaque jour sans le savoir : <strong>Ctrl+F</strong> dans un document, la barre de recherche de ton navigateur, Google qui cherche tes mots dans des milliards de pages, ton téléphone qui cherche un contact dans ta liste...</p>
+    <div class="box box-info" style="margin-top:1rem">
+      💡 <strong>Le problème en une phrase :</strong> On a un <strong>texte</strong> (long) et on cherche un <strong>motif</strong> (court). On veut savoir <em>à quelle(s) position(s)</em> le motif apparaît dans le texte.
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>📝 Le vocabulaire à connaître</h3>
+    <table class="data-table">
+      <tr><th>Terme</th><th>Définition simple</th><th>Exemple</th></tr>
+      <tr><td><strong>Texte</strong> (ou chaîne)</td><td>La grande chaîne dans laquelle on cherche</td><td><code>"ABRACADABRA"</code></td></tr>
+      <tr><td><strong>Motif</strong> (ou patron)</td><td>Ce qu'on veut trouver</td><td><code>"ABRA"</code></td></tr>
+      <tr><td><strong>n</strong></td><td>Longueur du texte</td><td>n = 11</td></tr>
+      <tr><td><strong>m</strong></td><td>Longueur du motif</td><td>m = 4</td></tr>
+      <tr><td><strong>Position</strong></td><td>Index où le motif commence (0 en Python)</td><td>0 et 7</td></tr>
+      <tr><td><strong>Comparaison</strong></td><td>On compare un caractère du texte avec un du motif</td><td>texte[0] vs motif[0]</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h3>🧩 Visualise le problème</h3>
+    <p style="font-size:14px;color:var(--ink3);margin-bottom:.75rem;font-family:var(--sans)">Le motif "ABRA" glisse sur le texte. Là où les lettres correspondent toutes → on a trouvé !</p>
+    <div class="text-display" id="intro-text"></div>
+    <div style="margin:.3rem 0 .5rem;font-family:var(--sans);font-size:13px;color:var(--ink3)">Motif recherché :</div>
+    <div class="pattern-display" id="intro-pattern"></div>
+    <div class="expl-box" id="intro-expl">Clique sur le bouton pour lancer la démonstration.</div>
+    <div class="btn-row">
+      <button class="btn btn-dark" onclick="introDemo()">▶ Lancer la démo</button>
+      <button class="btn" onclick="introReset()">↺ Recommencer</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>⚖️ Les 3 algorithmes au programme</h3>
+    <table class="data-table">
+      <tr><th>Algorithme</th><th>Idée principale</th><th>Complexité pire cas</th><th>À retenir</th></tr>
+      <tr>
+        <td><strong>Naïf</strong></td>
+        <td>Essaye toutes les positions une par une</td>
+        <td class="td-bad">O(n×m)</td>
+        <td>Simple mais lent</td>
+      </tr>
+      <tr>
+        <td><strong>Boyer-Moore-Horspool</strong></td>
+        <td>Saute des positions en cas d'échec</td>
+        <td class="td-good">O(n/m) en moy.</td>
+        <td>Très rapide en pratique</td>
+      </tr>
+      <tr>
+        <td><strong>Knuth-Morris-Pratt (KMP)</strong></td>
+        <td>Réutilise ce qu'on a déjà lu</td>
+        <td class="td-good">O(n+m)</td>
+        <td>Optimal en théorie</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-dark" onclick="goTo('s1',1)">Suivant : Algorithme naïf →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     SECTION 1 — ALGO NAÏF
+════════════════════════════════════════════ -->
+<div id="s1" class="section">
+  <div class="sec-title">L'algorithme <span>naïf</span></div>
+  <p class="sec-sub">La méthode la plus évidente — comme chercher dans un annuaire page par page.</p>
+
+  <div class="card card-ruled">
+    <h3>💡 L'analogie du livre</h3>
+    <div class="two-col">
+      <div class="analogy-card">
+        <div class="alabel" style="color:var(--ink3)">Ton approche naturelle</div>
+        <p>Tu cherches "soleil" dans un livre. Tu commences à la page 1, tu regardes chaque mot. Si ça ne correspond pas, tu avances d'un mot et tu recommences. <strong>Tu ne sautes rien.</strong></p>
+      </div>
+      <div class="analogy-card">
+        <div class="alabel" style="color:var(--red)">Le problème</div>
+        <p>Si le livre fait 500 pages et que "soleil" n'y est pas, tu as lu 500 pages pour rien. C'est la même chose pour l'algorithme naïf : <strong>il ne "profite" jamais de ses erreurs.</strong></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>📐 Comment ça marche — étape par étape</h3>
+    <div class="box box-purple">
+      <strong>Principe :</strong> Pour chaque position i dans le texte (de 0 à n-m), on compare le motif avec le texte à partir de i. Si toutes les lettres correspondent → trouvé ! Sinon → on avance de <strong>1 seul</strong> position.
+    </div>
+    <ol style="font-size:14.5px;color:var(--ink2);padding-left:1.5rem;line-height:2.5;font-family:var(--sans)">
+      <li>Poser le motif sur le texte à la <strong>position i = 0</strong></li>
+      <li>Comparer lettre par lettre (j = 0, 1, 2... jusqu'à m-1)</li>
+      <li>Si toutes les lettres correspondent : <strong>on a trouvé !</strong></li>
+      <li>Si une lettre diffère : <strong>avancer de 1</strong> (i = i + 1) et recommencer en 2</li>
+      <li>Si i > n - m : <strong>motif non trouvé</strong></li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <h3>🎬 Visualisation animée</h3>
+    <p style="font-size:13.5px;color:var(--ink3);margin-bottom:.75rem;font-family:var(--sans)">Texte : <strong>"ABCABCABD"</strong> — Motif : <strong>"ABCABD"</strong></p>
+
+    <div style="font-family:var(--sans);font-size:12px;color:var(--ink3);margin-bottom:.3rem">Texte :</div>
+    <div class="text-display" id="naive-text"></div>
+    <div style="font-family:var(--sans);font-size:12px;color:var(--ink3);margin:.3rem 0">Motif (décalé à la position courante) :</div>
+    <div class="text-display" id="naive-pattern" style="background:#fff;border-color:var(--ink)"></div>
+
+    <div class="step-bar" id="naive-steps"></div>
+    <div class="expl-box" id="naive-expl">Clique sur "Étape suivante" pour démarrer.</div>
+    <div class="counters">
+      <div class="counter"><div class="lbl">Position i</div><div class="val" id="cnt-i" style="color:var(--amber)">—</div></div>
+      <div class="counter"><div class="lbl">Comparaisons</div><div class="val" id="cnt-comp" style="color:var(--red)">0</div></div>
+      <div class="counter"><div class="lbl">Occurrences</div><div class="val" id="cnt-found" style="color:var(--green)">0</div></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn" onclick="naiveReset()">↺ Recommencer</button>
+      <button class="btn btn-dark" id="naive-next" onclick="naiveStep()">Étape suivante →</button>
+      <button class="btn btn-red" onclick="naiveAuto()">▶ Auto</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>⚠️ Le défaut majeur</h3>
+    <div class="box box-danger">
+      <strong>Exemple critique :</strong> texte = "AAAAAAAAAB" (9 A puis 1 B), motif = "AAAB". À chaque position, on compare 3 'A' avant de tomber sur la différence. On le fait 7 fois → <strong>7×3 = 21 comparaisons inutiles</strong>. On n'a rien appris de nos échecs.
+    </div>
+    <p style="font-size:14px;color:var(--ink2)">Complexité : <strong>O(n × m)</strong> dans le pire cas. Pour un texte de 1 million de caractères et un motif de 100 caractères → jusqu'à <strong>100 millions de comparaisons</strong>.</p>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn" onclick="goTo('s0',0)">← Retour</button>
+    <button class="btn btn-dark" onclick="goTo('s2',2)">Suivant : Boyer-Moore-Horspool →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     SECTION 2 — BOYER-MOORE-HORSPOOL
+════════════════════════════════════════════ -->
+<div id="s2" class="section">
+  <div class="sec-title">Boyer-Moore-<span>Horspool</span></div>
+  <p class="sec-sub">Lire de droite à gauche et sauter des positions — l'algorithme le plus rapide en pratique.</p>
+
+  <div class="card card-ruled">
+    <h3>💡 L'analogie du mot croisé</h3>
+    <div class="two-col">
+      <div class="analogy-card">
+        <div class="alabel" style="color:var(--ink3)">L'idée astucieuse</div>
+        <p>Tu cherches "CHAT" dans une grille. Tu regardes la <strong>dernière lettre d'abord</strong>. Si tu vois un 'Z' sous le motif, tu sais que 'Z' n'est pas dans "CHAT" → tu peux <strong>sauter 4 cases</strong> d'un coup !</p>
+      </div>
+      <div class="analogy-card">
+        <div class="alabel" style="color:var(--green)">Le gain</div>
+        <p>Au lieu d'avancer de 1 à chaque fois, tu avances parfois de <strong>m cases</strong> (toute la longueur du motif). En pratique, c'est souvent 5 à 10 fois plus rapide que l'algorithme naïf.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>📊 La table de décalage (bad character table)</h3>
+    <p style="font-size:14px;color:var(--ink2);margin-bottom:.75rem">Avant de chercher, on construit une table qui dit : <em>"Si je vois ce caractère, de combien est-ce que je dois décaler le motif ?"</em></p>
+    <div class="box box-info">
+      <strong>Règle :</strong> Pour chaque caractère c du motif :<br>
+      • Décalage = distance depuis la droite (dernière occurrence ≠ dernière position)<br>
+      • Si le caractère n'est pas dans le motif → décalage = longueur du motif
+    </div>
+
+    <p style="font-family:var(--sans);font-size:13px;color:var(--ink3);margin-bottom:.4rem">Entre un motif pour construire sa table :</p>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+      <input class="act-input" id="bmh-motif-input" value="ABCABD" style="max-width:200px" oninput="buildBMHTable()" placeholder="Motif...">
+    </div>
+    <div id="bmh-table-display" style="margin-top:1rem"></div>
+    <div class="expl-box info" id="bmh-table-expl"></div>
+  </div>
+
+  <div class="card">
+    <h3>🎬 Visualisation — BMH en action</h3>
+    <p style="font-size:13.5px;color:var(--ink3);margin-bottom:.75rem;font-family:var(--sans)">Texte : <strong>"ABCBADABCABD"</strong> — Motif : <strong>"ABCABD"</strong></p>
+
+    <div style="font-family:var(--sans);font-size:12px;color:var(--ink3);margin-bottom:.3rem">Texte :</div>
+    <div class="text-display" id="bmh-text"></div>
+    <div style="font-family:var(--sans);font-size:12px;color:var(--ink3);margin:.3rem 0">Motif (position courante) :</div>
+    <div class="text-display" id="bmh-pattern-disp" style="background:#fff;border-color:var(--ink)"></div>
+
+    <div class="expl-box" id="bmh-expl">Clique sur "Étape suivante" pour démarrer.</div>
+    <div class="counters">
+      <div class="counter"><div class="lbl">Position i</div><div class="val" id="bmh-i" style="color:var(--amber)">—</div></div>
+      <div class="counter"><div class="lbl">Comparaisons</div><div class="val" id="bmh-comp" style="color:var(--red)">0</div></div>
+      <div class="counter"><div class="lbl">Décalage</div><div class="val" id="bmh-skip" style="color:var(--blue)">—</div></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn" onclick="bmhReset()">↺ Recommencer</button>
+      <button class="btn btn-dark" id="bmh-next" onclick="bmhStep()">Étape suivante →</button>
+      <button class="btn btn-red" onclick="bmhAuto()">▶ Auto</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>⚖️ Comparaison naïf vs BMH</h3>
+    <p style="font-family:var(--sans);font-size:13.5px;color:var(--ink2);margin-bottom:1rem">Sur l'exemple ci-dessus (texte = "ABCBADABCABD", motif = "ABCABD") :</p>
+    <table class="data-table">
+      <tr><th>Algorithme</th><th>Comparaisons effectuées</th><th>Décalages</th></tr>
+      <tr><td>Naïf</td><td class="td-bad">~22</td><td>Toujours +1</td></tr>
+      <tr><td>BMH</td><td class="td-good">~9</td><td>Variables (1 à 6)</td></tr>
+    </table>
+    <div class="box box-ok" style="margin-top:.75rem">✅ BMH fait environ <strong>2 à 3 fois moins</strong> de comparaisons sur cet exemple. Sur de grands textes, le gain peut être de <strong>10× à 50×</strong>.</div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn" onclick="goTo('s1',1)">← Retour</button>
+    <button class="btn btn-dark" onclick="goTo('s3',3)">Suivant : KMP →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     SECTION 3 — KMP
+════════════════════════════════════════════ -->
+<div id="s3" class="section">
+  <div class="sec-title">Knuth-Morris-<span>Pratt (KMP)</span></div>
+  <p class="sec-sub">L'algorithme le plus élégant : ne jamais relire ce qu'on a déjà lu.</p>
+
+  <div class="card card-ruled">
+    <h3>💡 L'analogie du détective</h3>
+    <div class="two-col">
+      <div class="analogy-card">
+        <div class="alabel" style="color:var(--ink3)">Le principe</div>
+        <p>Quand tu lis "ABCAB" et que la 6ᵉ lettre diffère, tu sais que tu as déjà vu "AB" au début. <strong>Tu n'as pas besoin de revenir en arrière</strong> dans le texte : tu repars simplement du bon endroit dans le motif.</p>
+      </div>
+      <div class="analogy-card">
+        <div class="alabel" style="color:var(--blue)">La clé</div>
+        <p>KMP <strong>ne recule jamais</strong> dans le texte. Il avance toujours. C'est pour ça que sa complexité est O(n+m) — on lit chaque caractère au plus une fois.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>🔧 La table des échecs (failure function)</h3>
+    <p style="font-size:14px;color:var(--ink2);margin-bottom:.5rem">Avant de chercher, KMP construit une table <code>f</code> pour le motif. <code>f[j]</code> dit : "Si le j-ème caractère du motif diffère, recommence la comparaison à partir de <code>f[j]</code>."</p>
+    <div class="box box-purple">
+      <strong>Ce que fait f[j] :</strong> c'est la longueur du plus long <em>préfixe propre du motif[0..j]</em> qui est aussi un suffixe. Dit autrement : combien de lettres du début du motif j'ai déjà "validées" malgré l'échec.
+    </div>
+
+    <p style="font-family:var(--sans);font-size:13px;color:var(--ink3);margin-bottom:.4rem">Entre un motif pour construire sa table des échecs :</p>
+    <input class="act-input" id="kmp-motif-input" value="ABABAC" style="max-width:200px;margin-bottom:.75rem" oninput="buildKMPTable()">
+
+    <div style="font-family:var(--sans);font-size:12px;color:var(--ink3);margin-bottom:.3rem">Motif :</div>
+    <div class="fail-row" id="kmp-motif-row"></div>
+    <div style="font-family:var(--sans);font-size:12px;color:var(--ink3);margin:.4rem 0 .3rem">Table f[ ] :</div>
+    <div class="fail-row" id="kmp-fail-row"></div>
+    <div class="expl-box info" id="kmp-table-expl">Entre un motif pour construire la table.</div>
+  </div>
+
+  <div class="card">
+    <h3>🎬 KMP en action</h3>
+    <p style="font-size:13.5px;color:var(--ink3);margin-bottom:.75rem;font-family:var(--sans)">Texte : <strong>"ABABABABAC"</strong> — Motif : <strong>"ABABAC"</strong></p>
+
+    <div style="font-family:var(--sans);font-size:12px;color:var(--ink3);margin-bottom:.3rem">Texte (i = position dans le texte) :</div>
+    <div class="text-display" id="kmp-text"></div>
+    <div style="font-family:var(--sans);font-size:12px;color:var(--ink3);margin:.3rem 0">Motif (j = position dans le motif) :</div>
+    <div class="text-display" id="kmp-pattern-disp" style="background:#fff;border-color:var(--ink)"></div>
+
+    <div class="expl-box" id="kmp-expl">Clique sur "Étape suivante" pour démarrer.</div>
+    <div class="counters">
+      <div class="counter"><div class="lbl">i (texte)</div><div class="val" id="kmp-ci" style="color:var(--amber)">0</div></div>
+      <div class="counter"><div class="lbl">j (motif)</div><div class="val" id="kmp-cj" style="color:var(--purple)">0</div></div>
+      <div class="counter"><div class="lbl">Comparaisons</div><div class="val" id="kmp-comp" style="color:var(--red)">0</div></div>
+      <div class="counter"><div class="lbl">Reculs j</div><div class="val" id="kmp-backs" style="color:var(--green)">0</div></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn" onclick="kmpReset()">↺ Recommencer</button>
+      <button class="btn btn-dark" id="kmp-next" onclick="kmpStep()">Étape suivante →</button>
+      <button class="btn btn-red" onclick="kmpAuto()">▶ Auto</button>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn" onclick="goTo('s2',2)">← Retour</button>
+    <button class="btn btn-dark" onclick="goTo('s4',4)">Suivant : Code Python →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     SECTION 4 — CODE PYTHON
+════════════════════════════════════════════ -->
+<div id="s4" class="section">
+  <div class="sec-title">Le code <span>Python</span></div>
+  <p class="sec-sub">Chaque algorithme écrit en Python, commenté ligne par ligne.</p>
+
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1.5rem">
+    <button class="btn btn-dark" id="ct1" onclick="showCode(1)">Algo naïf</button>
+    <button class="btn" id="ct2" onclick="showCode(2)">Boyer-Moore-Horspool</button>
+    <button class="btn" id="ct3" onclick="showCode(3)">KMP</button>
+    <button class="btn" id="ct4" onclick="showCode(4)">Comparaison</button>
+  </div>
+
+  <!-- NAÏF -->
+  <div id="cb1">
+    <div class="box box-info">💡 <strong>L'algorithme naïf :</strong> deux boucles imbriquées. La boucle externe parcourt toutes les positions du texte. La boucle interne compare lettre par lettre.</div>
+    <div class="code-block">
+<pre><span class="cc"># ─── Recherche naïve ───────────────────────────────</span>
+
+<span class="ck">def</span> <span class="cf">recherche_naive</span>(texte, motif):
+    n = len(texte)   <span class="cc"># longueur du texte</span>
+    m = len(motif)   <span class="cc"># longueur du motif</span>
+    occurrences = [] <span class="cc"># liste des positions trouvées</span>
+
+    <span class="cc"># On essaie toutes les positions possibles</span>
+    <span class="cc"># i va de 0 à n-m  (inutile d'aller plus loin)</span>
+    <span class="ck">for</span> i <span class="ck">in</span> range(n - m + 1):
+
+        j = 0  <span class="cc"># indice dans le motif</span>
+
+        <span class="cc"># On compare lettre par lettre</span>
+        <span class="ck">while</span> j &lt; m <span class="ck">and</span> texte[i + j] == motif[j]:
+            j += 1   <span class="cc"># lettre suivante</span>
+
+        <span class="cc"># Si j == m, on a comparé toutes les lettres → trouvé !</span>
+        <span class="ck">if</span> j == m:
+            occurrences.append(i)
+
+    <span class="ck">return</span> occurrences
+
+<span class="cc"># Test</span>
+texte  = <span class="cs">"ABRACADABRA"</span>
+motif  = <span class="cs">"ABRA"</span>
+<span class="ck">print</span>(recherche_naive(texte, motif))  <span class="cc"># → [0, 7]</span></pre>
+    </div>
+    <div class="box box-warn">
+      📌 <strong>Complexité :</strong> O(n × m) dans le pire cas. Les deux boucles imbriquées : la externe fait n-m+1 itérations, l'interne peut faire jusqu'à m comparaisons.
+    </div>
+  </div>
+
+  <!-- BMH -->
+  <div id="cb2" style="display:none">
+    <div class="box box-info">💡 <strong>BMH :</strong> 1) Construire la table de décalage. 2) Comparer de <em>droite à gauche</em>. 3) En cas d'échec, utiliser la table pour sauter plusieurs positions.</div>
+    <div class="code-block">
+<pre><span class="cc"># ─── Boyer-Moore-Horspool ──────────────────────────</span>
+
+<span class="ck">def</span> <span class="cf">table_decalage</span>(motif):
+    <span class="cs">"""Construit la table 'bad character' de BMH"""</span>
+    m = len(motif)
+    table = {}  <span class="cc"># dictionnaire : caractère → décalage</span>
+
+    <span class="cc"># Pour chaque caractère du motif SAUF le dernier</span>
+    <span class="ck">for</span> i <span class="ck">in</span> range(m - 1):
+        table[motif[i]] = m - 1 - i  <span class="cc"># distance à la fin</span>
+
+    <span class="cc"># Caractère absent du motif → décalage = m (longueur totale)</span>
+    <span class="cc"># On utilise m comme valeur par défaut</span>
+    <span class="ck">return</span> table
+
+<span class="ck">def</span> <span class="cf">boyer_moore_horspool</span>(texte, motif):
+    n = len(texte)
+    m = len(motif)
+    table = table_decalage(motif)
+    occurrences = []
+
+    i = 0  <span class="cc"># position de départ de la fenêtre</span>
+
+    <span class="ck">while</span> i &lt;= n - m:
+        j = m - 1  <span class="cc"># on commence par la DROITE du motif</span>
+
+        <span class="cc"># Comparaison de droite à gauche</span>
+        <span class="ck">while</span> j &gt;= 0 <span class="ck">and</span> texte[i + j] == motif[j]:
+            j -= 1
+
+        <span class="ck">if</span> j &lt; 0:
+            occurrences.append(i)    <span class="cc"># motif trouvé !</span>
+            i += 1
+        <span class="ck">else</span>:
+            <span class="cc"># Caractère du texte aligné avec la fin du motif</span>
+            c = texte[i + m - 1]
+            decalage = table.get(c, m)  <span class="cc"># m si caractère absent</span>
+            i += max(1, decalage)
+
+    <span class="ck">return</span> occurrences
+
+<span class="cc"># Test</span>
+<span class="ck">print</span>(boyer_moore_horspool(<span class="cs">"ABRACADABRA"</span>, <span class="cs">"ABRA"</span>))  <span class="cc"># → [0, 7]</span></pre>
+    </div>
+  </div>
+
+  <!-- KMP -->
+  <div id="cb3" style="display:none">
+    <div class="box box-info">💡 <strong>KMP :</strong> 1) Construire la table des échecs. 2) Chercher sans jamais reculer dans le texte. En cas d'échec, utiliser f[j] pour savoir où reprendre.</div>
+    <div class="code-block">
+<pre><span class="cc"># ─── Knuth-Morris-Pratt (KMP) ──────────────────────</span>
+
+<span class="ck">def</span> <span class="cf">table_echecs</span>(motif):
+    <span class="cs">"""Construit la failure function de KMP"""</span>
+    m = len(motif)
+    f = [0] * m     <span class="cc"># f[j] = longueur du plus long bord de motif[0..j]</span>
+    k = 0           <span class="cc"># longueur du bord courant</span>
+
+    <span class="ck">for</span> j <span class="ck">in</span> range(1, m):
+        <span class="ck">while</span> k > 0 <span class="ck">and</span> motif[j] != motif[k]:
+            k = f[k - 1]        <span class="cc"># recul dans le motif</span>
+        <span class="ck">if</span> motif[j] == motif[k]:
+            k += 1              <span class="cc"># extension du bord</span>
+        f[j] = k
+    <span class="ck">return</span> f
+
+<span class="ck">def</span> <span class="cf">kmp</span>(texte, motif):
+    n = len(texte)
+    m = len(motif)
+    f = table_echecs(motif)
+    occurrences = []
+
+    j = 0  <span class="cc"># indice dans le motif</span>
+
+    <span class="ck">for</span> i <span class="ck">in</span> range(n):   <span class="cc"># i parcourt le texte (jamais de retour en arrière !)</span>
+
+        <span class="ck">while</span> j > 0 <span class="ck">and</span> texte[i] != motif[j]:
+            j = f[j - 1]       <span class="cc"># utilise la table des échecs</span>
+
+        <span class="ck">if</span> texte[i] == motif[j]:
+            j += 1             <span class="cc"># caractère validé</span>
+
+        <span class="ck">if</span> j == m:             <span class="cc"># motif entier trouvé</span>
+            occurrences.append(i - m + 1)
+            j = f[j - 1]       <span class="cc"># pour chercher d'autres occurrences</span>
+
+    <span class="ck">return</span> occurrences
+
+<span class="cc"># Test</span>
+<span class="ck">print</span>(kmp(<span class="cs">"ABABABABAC"</span>, <span class="cs">"ABABAC"</span>))  <span class="cc"># → [4]</span></pre>
+    </div>
+    <div class="box box-ok">
+      ✅ <strong>Complexité : O(n + m)</strong>. La boucle principale fait exactement n iterations (i ne recule jamais). La construction de la table fait O(m). C'est l'algorithme optimal en théorie.
+    </div>
+  </div>
+
+  <!-- COMPARAISON -->
+  <div id="cb4" style="display:none">
+    <div class="box box-purple">💡 <strong>Récapitulatif complet pour l'examen</strong></div>
+    <table class="data-table" style="margin-bottom:1rem">
+      <tr><th>Critère</th><th>Naïf</th><th>BMH</th><th>KMP</th></tr>
+      <tr><td>Complexité pire cas</td><td class="td-bad">O(n×m)</td><td class="td-bad">O(n×m)</td><td class="td-good">O(n+m)</td></tr>
+      <tr><td>Complexité moy.</td><td class="td-bad">O(n×m)</td><td class="td-good">O(n/m)</td><td class="td-good">O(n+m)</td></tr>
+      <tr><td>Pré-traitement</td><td>Aucun</td><td>Table décalage O(m)</td><td>Table échecs O(m)</td></tr>
+      <tr><td>Direction lecture motif</td><td>Gauche→Droite</td><td>Droite→Gauche</td><td>Gauche→Droite</td></tr>
+      <tr><td>Recul dans texte ?</td><td>Non</td><td>Non</td><td>Non</td></tr>
+      <tr><td>Facilité de code</td><td class="td-good">Très simple</td><td>Moyen</td><td>Plus complexe</td></tr>
+      <tr><td>Usage pratique</td><td>Motifs courts</td><td>Textes naturels</td><td>Alphabets petits</td></tr>
+    </table>
+    <div class="box box-warn">
+      📝 <strong>Pour l'examen NSI :</strong> savoir écrire l'algo naïf, connaître le principe de BMH (table de décalage, lecture droite→gauche), et connaître le principe de KMP (table des échecs, pas de recul dans le texte).
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn" onclick="goTo('s3',3)">← Retour</button>
+    <button class="btn btn-dark" onclick="goTo('s5',5)">Suivant : Activités →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     SECTION 5 — ACTIVITÉS
+════════════════════════════════════════════ -->
+<div id="s5" class="section">
+  <div class="sec-title">Activités <span>interactives</span></div>
+  <p class="sec-sub">Mets en pratique ce que tu as appris avec 4 exercices progressifs.</p>
+
+  <!-- ACT 1 -->
+  <div class="card card-ruled" style="border-top-color:var(--blue)">
+    <h3>🔎 Activité 1 — Recherche en direct</h3>
+    <p style="font-size:14px;color:var(--ink2);margin-bottom:1rem">Tape un texte et un motif. L'algorithme naïf te montre toutes les occurrences en temps réel.</p>
+    <div style="display:grid;grid-template-columns:1fr auto;gap:8px;margin-bottom:.75rem;align-items:end">
+      <div>
+        <label class="act-label">Texte à analyser</label>
+        <input class="act-input" id="live-text" value="ABRACADABRA ET ABRACADABRA" oninput="liveSearch()">
+      </div>
+    </div>
+    <div>
+      <label class="act-label">Motif recherché</label>
+      <input class="act-input" id="live-motif" value="ABRA" style="max-width:250px" oninput="liveSearch()">
+    </div>
+    <div class="live-wrap" id="live-result" style="margin-top:.75rem">
+      <div class="live-row" id="live-display"></div>
+    </div>
+    <div class="expl-box" id="live-expl"></div>
+  </div>
+
+  <!-- ACT 2 -->
+  <div class="card card-ruled" style="border-top-color:var(--amber);margin-top:1.5rem">
+    <h3>📊 Activité 2 — Construis la table BMH</h3>
+    <p style="font-size:14px;color:var(--ink2);margin-bottom:1rem">Pour chaque caractère, calcule toi-même le décalage. Clique sur une case pour entrer ta réponse.</p>
+
+    <div style="margin-bottom:.75rem">
+      <label class="act-label">Motif</label>
+      <input class="act-input" id="bmh-act-motif" value="SEARCH" style="max-width:200px" oninput="initBMHActivity()">
+    </div>
+    <div id="bmh-act-display"></div>
+    <div class="expl-box" id="bmh-act-expl">Clique sur une case jaune pour entrer le décalage.</div>
+    <div class="btn-row">
+      <button class="btn" onclick="initBMHActivity()">↺ Recommencer</button>
+      <button class="btn btn-dark" onclick="revealBMH()">💡 Voir la solution</button>
+    </div>
+  </div>
+
+  <!-- ACT 3 -->
+  <div class="card card-ruled" style="border-top-color:var(--green);margin-top:1.5rem">
+    <h3>🧠 Activité 3 — Compte les comparaisons</h3>
+    <p style="font-size:14px;color:var(--ink2);margin-bottom:1rem">Combien de comparaisons l'algorithme naïf fait-il sur cet exemple ? Calcule et vérifie.</p>
+
+    <div class="box box-purple" id="act3-problem"></div>
+
+    <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:1rem 0">
+      <label class="act-label" style="margin:0">Ton nombre de comparaisons :</label>
+      <input type="number" class="act-input" id="act3-answer" style="max-width:100px" min="0">
+      <button class="btn btn-dark" onclick="checkAct3()">Vérifier</button>
+    </div>
+    <div class="expl-box" id="act3-expl"></div>
+    <div class="btn-row">
+      <button class="btn" onclick="newAct3()">🔀 Nouveau problème</button>
+    </div>
+  </div>
+
+  <!-- ACT 4 -->
+  <div class="card card-ruled" style="border-top-color:var(--purple);margin-top:1.5rem">
+    <h3>🎯 Activité 4 — QCM express</h3>
+    <p style="font-size:14px;color:var(--ink2);margin-bottom:1rem">5 questions rapides sur les trois algorithmes.</p>
+    <div id="act4-body"></div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn" onclick="goTo('s4',4)">← Retour</button>
+    <button class="btn btn-dark" onclick="goTo('s6',6)">Suivant : Quiz final →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     SECTION 6 — QUIZ FINAL
+════════════════════════════════════════════ -->
+<div id="s6" class="section">
+  <div class="sec-title">Quiz <span>final</span></div>
+  <p class="sec-sub">12 questions couvrant tout le programme — niveau bac NSI.</p>
+
+  <div class="card">
+    <div class="prog-wrap"><div class="prog-fill" id="quiz-prog" style="width:0%"></div></div>
+    <div class="step-bar" id="quiz-dots"></div>
+    <div id="quiz-body"></div>
+  </div>
+</div>
+
+</div><!-- .content -->
+
+<script>
+/* ══════════════════════════════════════════
+   NAVIGATION
+══════════════════════════════════════════ */
+const SECTIONS = ['s0','s1','s2','s3','s4','s5','s6'];
+function goTo(id, idx) {
+  SECTIONS.forEach(s => document.getElementById(s).classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.nav-btn')[idx].classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+  // init on enter
+  if(id==='s0') initIntro();
+  if(id==='s1') naiveInit();
+  if(id==='s2') { buildBMHTable(); bmhInit(); }
+  if(id==='s3') { buildKMPTable(); kmpInit(); }
+  if(id==='s5') { liveSearch(); initBMHActivity(); newAct3(); initAct4(); }
+  if(id==='s6') quizInit();
+}
+
+/* ══════════════════════════════════════════
+   INTRO DEMO
+══════════════════════════════════════════ */
+const INTRO_T = "ABRACADABRA";
+const INTRO_P = "ABRA";
+let introTimer=null, introPos=0;
+
+function renderIntroText(hi_start=-1,hi_len=0,found=[]) {
+  const el=document.getElementById('intro-text');
+  let h='';
+  for(let i=0;i<INTRO_T.length;i++){
+    let cls='ch';
+    if(found.includes(i)) cls='ch ch-found';
+    else if(i>=hi_start&&i<hi_start+hi_len) cls='ch ch-match';
+    h+=`<span class="${cls}">${INTRO_T[i]}</span>`;
+  }
+  el.innerHTML=h;
+}
+function renderIntroPattern(off,matchLen=0) {
+  const el=document.getElementById('intro-pattern');
+  let h='';
+  for(let i=0;i<INTRO_P.length;i++){
+    let cls='pch';
+    if(i<matchLen) cls='pch pch-match';
+    h+=`<span class="${cls}">${INTRO_P[i]}</span>`;
+  }
+  el.innerHTML=h;
+}
+
+function initIntro(){
+  clearInterval(introTimer); introPos=0;
+  renderIntroText(); renderIntroPattern(0);
+  document.getElementById('intro-expl').textContent='Clique sur le bouton pour lancer la démonstration.';
+  document.getElementById('intro-pattern').innerHTML=INTRO_P.split('').map(c=>`<span class="pch">${c}</span>`).join('');
+}
+
+function introDemo(){
+  clearInterval(introTimer); introPos=0;
+  const found=[];
+  function step(){
+    if(introPos>INTRO_T.length-INTRO_P.length){
+      document.getElementById('intro-expl').innerHTML=`✅ Terminé ! Motif "<strong>${INTRO_P}</strong>" trouvé aux positions : <strong>${found.join(', ')}</strong>.`;
+      clearInterval(introTimer);
+      const fn=found.flatMap(p=>[...Array(INTRO_P.length).keys()].map(j=>p+j));
+      renderIntroText(-1,0,[...new Set(fn)]);
+      return;
+    }
+    let match=true;
+    for(let j=0;j<INTRO_P.length;j++){
+      if(INTRO_T[introPos+j]!==INTRO_P[j]){match=false;break;}
+    }
+    if(match){
+      found.push(introPos);
+      document.getElementById('intro-expl').innerHTML=`🎉 Position <strong>${introPos}</strong> : motif trouvé ! (${INTRO_T.substring(introPos,introPos+INTRO_P.length)})`;
+    } else {
+      document.getElementById('intro-expl').innerHTML=`Position <strong>${introPos}</strong> : pas de correspondance, on avance...`;
+    }
+    renderIntroText(introPos,INTRO_P.length,found.flatMap(p=>[...Array(INTRO_P.length).keys()].map(j=>p+j)));
+    introPos++;
+  }
+  introTimer=setInterval(step,700);
+}
+function introReset(){clearInterval(introTimer);initIntro();}
+
+/* ══════════════════════════════════════════
+   SECTION 1 — NAÏF
+══════════════════════════════════════════ */
+const N_TEXT = "ABCABCABD";
+const N_MOTIF= "ABCABD";
+let n_i=0, n_j=0, n_comp=0, n_found=0, naiveTimer=null, naiveDone=false;
+let n_state='start'; // 'comparing','advance'
+
+function naiveInit(){
+  clearInterval(naiveTimer);
+  n_i=0;n_j=0;n_comp=0;n_found=0;naiveDone=false;n_state='start';
+  renderNaiveText(-1,-1,[]);
+  renderNaivePattern(0,0);
+  document.getElementById('naive-expl').textContent='Clique sur "Étape suivante" pour démarrer.';
+  document.getElementById('cnt-i').textContent='—';
+  document.getElementById('cnt-comp').textContent='0';
+  document.getElementById('cnt-found').textContent='0';
+  document.getElementById('naive-next').disabled=false;
+  // steps
+  const steps=document.getElementById('naive-steps');
+  steps.innerHTML='';
+  const total=N_TEXT.length-N_MOTIF.length+1;
+  for(let i=0;i<total;i++){const d=document.createElement('span');d.className='step-dot';d.id='ns'+i;steps.appendChild(d);}
+  const lbl=document.createElement('span');lbl.className='step-lbl';lbl.id='ns-lbl';lbl.textContent='Position — / '+(total-1);steps.appendChild(lbl);
+}
+
+function renderNaiveText(ci, cj, founds){
+  const el=document.getElementById('naive-text');
+  let h='';
+  for(let i=0;i<N_TEXT.length;i++){
+    let cls='ch';
+    if(founds.some(f=>i>=f&&i<f+N_MOTIF.length)) cls='ch ch-found';
+    else if(i===ci+cj) cls=cj>=0?'ch ch-curr':'ch';
+    h+=`<span class="${cls}">${N_TEXT[i]}</span>`;
+  }
+  el.innerHTML=h;
+}
+function renderNaivePattern(offset,matchLen){
+  const el=document.getElementById('naive-pattern');
+  let h='<span style="display:inline-block;width:'+(offset*19.5)+'px"></span>';
+  for(let j=0;j<N_MOTIF.length;j++){
+    let cls='ch';
+    if(j<matchLen) cls='ch ch-match';
+    else if(j===matchLen) cls='ch ch-curr';
+    h+=`<span class="${cls}">${N_MOTIF[j]}</span>`;
+  }
+  el.innerHTML=h;
+}
+
+function naiveStep(){
+  if(naiveDone) return;
+  const n=N_TEXT.length,m=N_MOTIF.length;
+  if(n_i>n-m){
+    document.getElementById('naive-expl').innerHTML=`✅ Recherche terminée. <strong>${n_comp}</strong> comparaisons effectuées, <strong>${n_found}</strong> occurrence(s) trouvée(s).`;
+    naiveDone=true;document.getElementById('naive-next').disabled=true;return;
+  }
+  document.getElementById('cnt-i').textContent=n_i;
+  document.getElementById('ns-lbl').textContent='Position '+n_i+' / '+(n-m);
+  for(let k=0;k<=n_i;k++){const d=document.getElementById('ns'+k);if(d)d.className='step-dot '+(k<n_i?'done':'active');}
+
+  if(N_TEXT[n_i+n_j]===N_MOTIF[n_j]){
+    n_comp++;
+    document.getElementById('cnt-comp').textContent=n_comp;
+    document.getElementById('naive-expl').innerHTML=`Position i=${n_i}, j=${n_j} : texte[${n_i+n_j}]='<strong>${N_TEXT[n_i+n_j]}</strong>' = motif[${n_j}]='<strong>${N_MOTIF[n_j]}</strong>' ✓ Correspondance !`;
+    document.getElementById('naive-expl').className='expl-box ok';
+    renderNaiveText(n_i,n_j,[]);renderNaivePattern(n_i,n_j+1);
+    n_j++;
+    if(n_j===m){
+      n_found++;n_j=0;
+      document.getElementById('cnt-found').textContent=n_found;
+      document.getElementById('naive-expl').innerHTML=`🎉 Motif trouvé à la position <strong>${n_i}</strong> !`;
+      n_i++;
+    }
+  } else {
+    n_comp++;
+    document.getElementById('cnt-comp').textContent=n_comp;
+    document.getElementById('naive-expl').innerHTML=`Position i=${n_i}, j=${n_j} : texte[${n_i+n_j}]='<strong>${N_TEXT[n_i+n_j]}</strong>' ≠ motif[${n_j}]='<strong>${N_MOTIF[n_j]}</strong>' ✗ Échec → on avance d'1 position.`;
+    document.getElementById('naive-expl').className='expl-box bad';
+    renderNaiveText(n_i,n_j,[]);renderNaivePattern(n_i,0);
+    n_j=0;n_i++;
+  }
+}
+function naiveReset(){clearInterval(naiveTimer);naiveInit();}
+function naiveAuto(){clearInterval(naiveTimer);naiveReset();naiveTimer=setInterval(()=>{if(naiveDone){clearInterval(naiveTimer);return;}naiveStep();},500);}
+
+/* ══════════════════════════════════════════
+   SECTION 2 — BMH : TABLE DE DÉCALAGE
+══════════════════════════════════════════ */
+function buildBMHTable(){
+  const m=document.getElementById('bmh-motif-input');
+  if(!m) return;
+  const motif=m.value.toUpperCase()||'ABCABD';
+  const len=motif.length;
+  const table={};
+  for(let i=0;i<len-1;i++) table[motif[i]]=len-1-i;
+  let h='<div class="bmh-table">';
+  for(let i=0;i<len-1;i++){
+    const c=motif[i];
+    h+=`<div class="bmh-cell"><div class="ch">${c}</div><div class="skip">${table[c]}</div></div>`;
+  }
+  // last char (not in table rules, skip = m if not seen elsewhere)
+  const lastC=motif[len-1];
+  const lastSkip=table[lastC]!==undefined?table[lastC]:len;
+  h+=`<div class="bmh-cell" style="background:var(--red-bg);border-color:var(--red-bdr)"><div class="ch" style="color:var(--red)">${lastC}</div><div class="skip" style="color:var(--red)">${lastSkip}*</div></div>`;
+  h+='</div>';
+  h+=`<p style="font-size:12px;color:var(--ink3);font-family:var(--sans);margin-top:.35rem">* Dernier caractère : décalage spécial. Pour les autres caractères non présents : décalage = ${len}.</p>`;
+  document.getElementById('bmh-table-display').innerHTML=h;
+  document.getElementById('bmh-table-expl').innerHTML=`Motif : <strong>${motif}</strong> (longueur ${len}). La table dit : si je vois ce caractère aligné avec la fin du motif et qu'il y a un échec, je décale d'autant.`;
+}
+setTimeout(buildBMHTable,50);
+
+/* BMH ANIMATION */
+const BMH_TEXT  = "ABCBADABCABD";
+const BMH_MOTIF = "ABCABD";
+let bmh_i=0, bmh_comp=0, bmhDone=false, bmhTimer=null;
+let bmh_table={};
+
+function bmhBuildTable(motif){
+  const t={};
+  for(let i=0;i<motif.length-1;i++) t[motif[i]]=motif.length-1-i;
+  return t;
+}
+
+function bmhInit(){
+  clearInterval(bmhTimer);
+  bmh_i=0;bmh_comp=0;bmhDone=false;
+  bmh_table=bmhBuildTable(BMH_MOTIF);
+  renderBMHText(-1,[]);renderBMHPattern(0);
+  document.getElementById('bmh-expl').textContent='Clique sur "Étape suivante" pour démarrer.';
+  document.getElementById('bmh-expl').className='expl-box';
+  document.getElementById('bmh-i').textContent='—';
+  document.getElementById('bmh-comp').textContent='0';
+  document.getElementById('bmh-skip').textContent='—';
+  document.getElementById('bmh-next').disabled=false;
+}
+
+function renderBMHText(curr_end,founds){
+  const el=document.getElementById('bmh-text');
+  let h='';
+  for(let i=0;i<BMH_TEXT.length;i++){
+    let cls='ch';
+    if(founds.some(f=>i>=f&&i<f+BMH_MOTIF.length)) cls='ch ch-found';
+    else if(i===curr_end) cls='ch ch-curr';
+    h+=`<span class="${cls}">${BMH_TEXT[i]}</span>`;
+  }
+  el.innerHTML=h;
+}
+function renderBMHPattern(off){
+  const el=document.getElementById('bmh-pattern-disp');
+  let h='<span style="display:inline-block;width:'+(off*19.5)+'px"></span>';
+  for(let j=0;j<BMH_MOTIF.length;j++) h+=`<span class="ch">${BMH_MOTIF[j]}</span>`;
+  el.innerHTML=h;
+}
+
+const bmhFounds=[];
+function bmhStep(){
+  if(bmhDone)return;
+  const n=BMH_TEXT.length,m=BMH_MOTIF.length;
+  if(bmh_i>n-m){
+    document.getElementById('bmh-expl').innerHTML=`✅ Terminé. ${bmh_comp} comparaisons (vs ~22 pour le naïf).`;
+    bmhDone=true;document.getElementById('bmh-next').disabled=true;return;
+  }
+  // compare right to left
+  let j=m-1;
+  while(j>=0&&BMH_TEXT[bmh_i+j]===BMH_MOTIF[j]){bmh_comp++;j--;}
+  bmh_comp++;// last comparison
+  document.getElementById('bmh-comp').textContent=bmh_comp;
+  document.getElementById('bmh-i').textContent=bmh_i;
+  renderBMHText(bmh_i+m-1,bmhFounds.flatMap(p=>[...Array(m).keys()].map(k=>p+k)));
+  renderBMHPattern(bmh_i);
+
+  if(j<0){
+    bmhFounds.push(bmh_i);
+    document.getElementById('bmh-expl').innerHTML=`🎉 Motif trouvé à la position <strong>${bmh_i}</strong> ! On avance de 1.`;
+    document.getElementById('bmh-expl').className='expl-box ok';
+    document.getElementById('bmh-skip').textContent='1';
+    bmh_i+=1;
+  } else {
+    const c=BMH_TEXT[bmh_i+m-1];
+    const dec=bmh_table.hasOwnProperty(c)?bmh_table[c]:m;
+    const skip=Math.max(1,dec);
+    document.getElementById('bmh-expl').innerHTML=`Position i=${bmh_i} : échec à j=${j} (texte[${bmh_i+j}]='${BMH_TEXT[bmh_i+j]}' ≠ motif[${j}]='${BMH_MOTIF[j]}'). Caractère de droite texte[${bmh_i+m-1}]='${c}' → décalage = <strong>${skip}</strong>. On saute ${skip} position(s).`;
+    document.getElementById('bmh-expl').className='expl-box bad';
+    document.getElementById('bmh-skip').textContent=skip;
+    bmh_i+=skip;
+  }
+}
+function bmhReset(){clearInterval(bmhTimer);bmhFounds.length=0;bmhInit();}
+function bmhAuto(){clearInterval(bmhTimer);bmhReset();bmhTimer=setInterval(()=>{if(bmhDone){clearInterval(bmhTimer);return;}bmhStep();},800);}
+
+/* ══════════════════════════════════════════
+   SECTION 3 — KMP
+══════════════════════════════════════════ */
+function computeKMPFailure(motif){
+  const m=motif.length,f=new Array(m).fill(0);
+  let k=0;
+  for(let j=1;j<m;j++){
+    while(k>0&&motif[j]!==motif[k]) k=f[k-1];
+    if(motif[j]===motif[k]) k++;
+    f[j]=k;
+  }
+  return f;
+}
+
+function buildKMPTable(){
+  const inp=document.getElementById('kmp-motif-input');
+  if(!inp)return;
+  const motif=inp.value.toUpperCase()||'ABABAC';
+  const f=computeKMPFailure(motif);
+  // motif row
+  let mr='',fr='';
+  for(let i=0;i<motif.length;i++){
+    mr+=`<div class="fail-cell"><div style="font-size:10px;color:var(--ink3)">[${i}]</div>${motif[i]}</div>`;
+    fr+=`<div class="fail-cell done">${f[i]}</div>`;
+  }
+  document.getElementById('kmp-motif-row').innerHTML=mr;
+  document.getElementById('kmp-fail-row').innerHTML=fr;
+  // explain
+  let expl='<strong>Lecture :</strong> ';
+  expl+=motif.split('').map((c,i)=>`f[${i}]=${f[i]}`).join(', ');
+  expl+=`. Si un échec survient au j-ème caractère, on reprend à j=f[j-1] dans le motif (sans reculer dans le texte).`;
+  document.getElementById('kmp-table-expl').innerHTML=expl;
+}
+setTimeout(buildKMPTable,50);
+
+const KMP_TEXT  = "ABABABABAC";
+const KMP_MOTIF = "ABABAC";
+let kmp_i=0,kmp_j=0,kmp_comp=0,kmp_backs=0,kmpDone=false,kmpTimer=null,kmpFounds=[];
+
+function kmpInit(){
+  clearInterval(kmpTimer);
+  kmp_i=0;kmp_j=0;kmp_comp=0;kmp_backs=0;kmpDone=false;kmpFounds=[];
+  renderKMPText(-1,[]);renderKMPPattern(0,0);
+  document.getElementById('kmp-expl').textContent='Clique sur "Étape suivante" pour démarrer.';
+  document.getElementById('kmp-expl').className='expl-box';
+  document.getElementById('kmp-ci').textContent='0';
+  document.getElementById('kmp-cj').textContent='0';
+  document.getElementById('kmp-comp').textContent='0';
+  document.getElementById('kmp-backs').textContent='0';
+  document.getElementById('kmp-next').disabled=false;
+}
+
+function renderKMPText(ci,founds){
+  const el=document.getElementById('kmp-text');
+  let h='';
+  for(let i=0;i<KMP_TEXT.length;i++){
+    let cls='ch';
+    if(founds.some(f=>i>=f&&i<f+KMP_MOTIF.length)) cls='ch ch-found';
+    else if(i===ci) cls='ch ch-curr';
+    h+=`<span class="${cls}">${KMP_TEXT[i]}</span>`;
+  }
+  el.innerHTML=h;
+}
+function renderKMPPattern(align,matchLen){
+  const el=document.getElementById('kmp-pattern-disp');
+  let h='<span style="display:inline-block;width:'+(align*19.5)+'px"></span>';
+  for(let j=0;j<KMP_MOTIF.length;j++){
+    let cls='ch';
+    if(j<matchLen) cls='ch ch-match';
+    else if(j===matchLen) cls='ch ch-curr';
+    h+=`<span class="${cls}">${KMP_MOTIF[j]}</span>`;
+  }
+  el.innerHTML=h;
+}
+
+const kmpF=computeKMPFailure(KMP_MOTIF);
+
+function kmpStep(){
+  if(kmpDone)return;
+  const n=KMP_TEXT.length,m=KMP_MOTIF.length;
+  if(kmp_i>=n){
+    document.getElementById('kmp-expl').innerHTML=`✅ Terminé. ${kmp_comp} comparaisons, ${kmp_backs} recul(s) dans le motif (jamais de recul dans le texte !). ${kmpFounds.length} occurrence(s) trouvée(s).`;
+    kmpDone=true;document.getElementById('kmp-next').disabled=true;return;
+  }
+  document.getElementById('kmp-ci').textContent=kmp_i;
+  document.getElementById('kmp-cj').textContent=kmp_j;
+  const align=kmp_i-kmp_j;
+  renderKMPText(kmp_i,kmpFounds.flatMap(p=>[...Array(m).keys()].map(k=>p+k)));
+  renderKMPPattern(align,kmp_j);
+
+  kmp_comp++;
+  document.getElementById('kmp-comp').textContent=kmp_comp;
+
+  if(KMP_TEXT[kmp_i]===KMP_MOTIF[kmp_j]){
+    document.getElementById('kmp-expl').innerHTML=`i=${kmp_i}, j=${kmp_j} : '${KMP_TEXT[kmp_i]}' = '${KMP_MOTIF[kmp_j]}' ✓ On avance dans les deux.`;
+    document.getElementById('kmp-expl').className='expl-box ok';
+    kmp_j++;
+    if(kmp_j===m){
+      kmpFounds.push(kmp_i-m+1);
+      document.getElementById('kmp-expl').innerHTML=`🎉 Motif trouvé à la position <strong>${kmp_i-m+1}</strong> ! On reprend à j=f[${m-1}]=${kmpF[m-1]}.`;
+      kmp_j=kmpF[m-1];
+    }
+    kmp_i++;
+  } else {
+    if(kmp_j>0){
+      kmp_backs++;
+      document.getElementById('kmp-backs').textContent=kmp_backs;
+      document.getElementById('kmp-expl').innerHTML=`i=${kmp_i}, j=${kmp_j} : '${KMP_TEXT[kmp_i]}' ≠ '${KMP_MOTIF[kmp_j]}'. Recul dans le motif : j = f[${kmp_j-1}] = ${kmpF[kmp_j-1]}. On ne recule PAS dans le texte !`;
+      document.getElementById('kmp-expl').className='expl-box bad';
+      kmp_j=kmpF[kmp_j-1];
+    } else {
+      document.getElementById('kmp-expl').innerHTML=`i=${kmp_i}, j=0 : '${KMP_TEXT[kmp_i]}' ≠ '${KMP_MOTIF[0]}'. On avance i (j reste à 0).`;
+      document.getElementById('kmp-expl').className='expl-box bad';
+      kmp_i++;
+    }
+  }
+}
+function kmpReset(){clearInterval(kmpTimer);kmpFounds=[];kmpInit();}
+function kmpAuto(){clearInterval(kmpTimer);kmpReset();kmpTimer=setInterval(()=>{if(kmpDone){clearInterval(kmpTimer);return;}kmpStep();},600);}
+
+/* ══════════════════════════════════════════
+   SECTION 4 — CODE TABS
+══════════════════════════════════════════ */
+function showCode(n){
+  for(let i=1;i<=4;i++){
+    document.getElementById('cb'+i).style.display=i===n?'':'none';
+    document.getElementById('ct'+i).className=i===n?'btn btn-dark':'btn';
+  }
+}
+
+/* ══════════════════════════════════════════
+   ACTIVITÉ 1 — LIVE SEARCH
+══════════════════════════════════════════ */
+function liveSearch(){
+  const texte=(document.getElementById('live-text')?.value||'').toUpperCase();
+  const motif=(document.getElementById('live-motif')?.value||'').toUpperCase();
+  const display=document.getElementById('live-display');
+  const expl=document.getElementById('live-expl');
+  if(!texte||!motif){display.innerHTML='';expl.textContent='Entre un texte et un motif.';return;}
+
+  const found=[];
+  for(let i=0;i<=texte.length-motif.length;i++){
+    if(texte.substring(i,i+motif.length)===motif) found.push(i);
+  }
+
+  let h='';
+  const foundSet=new Set();
+  found.forEach(p=>{for(let j=0;j<motif.length;j++) foundSet.add(p+j);});
+  for(let i=0;i<texte.length;i++){
+    if(foundSet.has(i)) h+=`<span class="ch ch-found">${texte[i]}</span>`;
+    else h+=`<span class="ch">${texte[i]}</span>`;
+  }
+  display.innerHTML=h;
+
+  if(found.length===0) expl.innerHTML=`Motif "<strong>${motif}</strong>" non trouvé dans ce texte.`;
+  else expl.innerHTML=`✅ Motif "<strong>${motif}</strong>" trouvé <strong>${found.length}</strong> fois, aux positions : <strong>${found.join(', ')}</strong>. Nombre de comparaisons (naïf) : <strong>${countNaiveComp(texte,motif)}</strong>.`;
+}
+
+function countNaiveComp(text,motif){
+  let c=0;
+  for(let i=0;i<=text.length-motif.length;i++){
+    for(let j=0;j<motif.length;j++){c++;if(text[i+j]!==motif[j])break;}
+  }
+  return c;
+}
+setTimeout(liveSearch,100);
+
+/* ══════════════════════════════════════════
+   ACTIVITÉ 2 — BMH TABLE
+══════════════════════════════════════════ */
+function initBMHActivity(){
+  const inp=document.getElementById('bmh-act-motif');
+  if(!inp)return;
+  const motif=inp.value.toUpperCase()||'SEARCH';
+  const m=motif.length;
+  const solution={};
+  for(let i=0;i<m-1;i++) solution[motif[i]]=m-1-i;
+
+  let h='<div style="display:flex;gap:4px;flex-wrap:wrap">';
+  const seen=new Set();
+  for(let i=0;i<m-1;i++){
+    const c=motif[i];
+    if(seen.has(c)) continue;
+    seen.add(c);
+    h+=`<div style="border:1px solid var(--border);border-radius:8px;padding:8px;text-align:center;min-width:70px;background:var(--amber-bg)">
+      <div style="font-family:var(--mono);font-size:16px;font-weight:600">${c}</div>
+      <input type="number" id="ba-${c}" style="width:52px;margin-top:4px;background:var(--bg2);border:1px solid var(--amber-bdr);border-radius:5px;font-family:var(--mono);font-size:14px;text-align:center;padding:3px;outline:none" min="1" placeholder="?">
+    </div>`;
+  }
+  h+=`<div style="border:1px solid var(--border);border-radius:8px;padding:8px;text-align:center;min-width:70px;background:var(--blue-bg)">
+    <div style="font-size:11px;color:var(--ink3);margin-bottom:2px">Autres</div>
+    <div style="font-family:var(--mono);font-size:16px;font-weight:600;color:var(--blue)">${m}</div>
+  </div>`;
+  h+='</div>';
+  document.getElementById('bmh-act-display').innerHTML=h;
+  document.getElementById('bmh-act-expl').textContent='Entre le décalage pour chaque caractère. Rappel : décalage = distance depuis la droite dans le motif.';
+}
+
+function revealBMH(){
+  const inp=document.getElementById('bmh-act-motif');
+  const motif=inp.value.toUpperCase()||'SEARCH';
+  const m=motif.length;
+  const seen=new Set();
+  let expl=`Solution pour "${motif}" : `;
+  const parts=[];
+  for(let i=0;i<m-1;i++){
+    const c=motif[i];
+    if(seen.has(c)) continue;
+    seen.add(c);
+    const dec=m-1-i;
+    const el=document.getElementById('ba-'+c);
+    if(el){el.value=dec;el.style.background='var(--green-bg)';el.style.borderColor='var(--green-bdr)';}
+    parts.push(`${c}→${dec}`);
+  }
+  document.getElementById('bmh-act-expl').innerHTML=`Solution : ${parts.join(', ')}. Pour tout autre caractère : décalage = ${m}.`;
+}
+setTimeout(initBMHActivity,100);
+
+/* ══════════════════════════════════════════
+   ACTIVITÉ 3 — COMPTE LES COMPARAISONS
+══════════════════════════════════════════ */
+const ACT3_PROBLEMS=[
+  {texte:"AAABAAAB",motif:"AAAB",ans:14,hint:"Chaque fois que ça échoue en position 3, on a fait 4 comparaisons."},
+  {texte:"ABABABAB",motif:"ABAB",ans:11,hint:"La plupart des positions font 2-4 comparaisons."},
+  {texte:"AAAAABAAAA",motif:"AAAB",ans:16,hint:"Les 6 premières positions font 4 comparaisons chacune..."},
+];
+let act3Current=null;
+function newAct3(){
+  act3Current=ACT3_PROBLEMS[Math.floor(Math.random()*ACT3_PROBLEMS.length)];
+  document.getElementById('act3-problem').innerHTML=
+    `Texte : <code>"${act3Current.texte}"</code> (n=${act3Current.texte.length}) — Motif : <code>"${act3Current.motif}"</code> (m=${act3Current.motif.length})<br>
+     Combien de comparaisons l'algo naïf fait-il exactement ?`;
+  const inp=document.getElementById('act3-answer');
+  if(inp){inp.value='';inp.style.borderColor='var(--border)';}
+  document.getElementById('act3-expl').textContent='Entre ton nombre de comparaisons et clique sur Vérifier.';
+  document.getElementById('act3-expl').className='expl-box';
+}
+function checkAct3(){
+  const val=parseInt(document.getElementById('act3-answer').value);
+  const real=countNaiveComp(act3Current.texte,act3Current.motif);
+  const expl=document.getElementById('act3-expl');
+  const inp=document.getElementById('act3-answer');
+  if(isNaN(val)){expl.textContent='Entre un nombre.';return;}
+  if(val===real){
+    expl.innerHTML=`✅ Bravo ! ${real} comparaisons, c'est exact ! ${act3Current.hint}`;
+    expl.className='expl-box ok';
+    inp.style.borderColor='var(--green)';
+  } else {
+    expl.innerHTML=`❌ Non. La réponse est <strong>${real}</strong>. ${act3Current.hint} Trace l'exécution case par case pour le vérifier.`;
+    expl.className='expl-box bad';
+    inp.style.borderColor='var(--red)';
+  }
+}
+setTimeout(newAct3,100);
+
+/* ══════════════════════════════════════════
+   ACTIVITÉ 4 — QCM EXPRESS
+══════════════════════════════════════════ */
+const ACT4_Qs=[
+  {q:"Que veut dire 'n' dans le contexte de la recherche textuelle ?",opts:["La longueur du motif","La longueur du texte","Le nombre d'occurrences","La position de la première occurrence"],ans:1},
+  {q:"L'algorithme naïf avance de combien de positions après un échec ?",opts:["La longueur du motif m","La valeur de la table de décalage","Toujours 1","0"],ans:2},
+  {q:"Dans BMH, dans quel sens compare-t-on le motif avec la fenêtre ?",opts:["Gauche vers droite","Droite vers gauche","Au milieu puis bords","Dans n'importe quel sens"],ans:1},
+  {q:"À quoi sert la 'failure function' (table des échecs) dans KMP ?",opts:["À construire la table de décalage","À savoir combien sauter dans le texte","À savoir où reprendre dans le MOTIF sans reculer dans le texte","À calculer la complexité"],ans:2},
+  {q:"Quelle est la complexité de KMP ?",opts:["O(n×m)","O(n²)","O(n+m)","O(m²)"],ans:2},
+];
+let act4Idx=0,act4Score=0,act4Done=false;
+
+function initAct4(){
+  act4Idx=0;act4Score=0;act4Done=false;renderAct4();
+}
+function renderAct4(){
+  const body=document.getElementById('act4-body');
+  if(!body)return;
+  if(act4Idx>=ACT4_Qs.length){
+    body.innerHTML=`<div style="text-align:center;padding:1rem"><strong style="font-size:1.3rem;font-family:var(--sans)">${act4Score}/${ACT4_Qs.length}</strong><br><span style="color:var(--ink3);font-family:var(--sans)">${act4Score>=4?'Excellent !':act4Score>=3?'Bien !':'Relis le cours.'}</span><br><button class="btn btn-dark" style="margin-top:.75rem" onclick="initAct4()">↺ Recommencer</button></div>`;
+    return;
+  }
+  const q=ACT4_Qs[act4Idx];
+  let h=`<div style="font-family:var(--sans);font-size:13px;color:var(--ink3);margin-bottom:.5rem">Question ${act4Idx+1}/${ACT4_Qs.length}</div>`;
+  h+=`<p class="quiz-q">${q.q}</p>`;
+  q.opts.forEach((o,i)=>h+=`<button class="quiz-opt" id="a4o${i}" onclick="ansAct4(${i})">${String.fromCharCode(65+i)}. ${o}</button>`);
+  h+=`<div id="a4-fb" class="q-feedback" style="display:none"></div>`;
+  h+=`<div style="text-align:right;margin-top:.5rem"><button class="btn btn-dark" id="a4-next" style="display:none" onclick="nextAct4()">Suivant →</button></div>`;
+  body.innerHTML=h;
+}
+let act4Answered=false;
+function ansAct4(i){
+  if(act4Answered)return;act4Answered=true;
+  const q=ACT4_Qs[act4Idx];
+  document.querySelectorAll('[id^="a4o"]').forEach((b,j)=>{
+    if(j===q.ans)b.className='quiz-opt correct';
+    else if(j===i)b.className='quiz-opt wrong';
+    b.disabled=true;
+  });
+  const fb=document.getElementById('a4-fb');fb.style.display='';
+  if(i===q.ans){act4Score++;fb.className='q-feedback ok';fb.textContent='✅ Correct !';}
+  else{fb.className='q-feedback bad';fb.textContent='❌ La bonne réponse est : '+q.opts[q.ans];}
+  document.getElementById('a4-next').style.display='';
+}
+function nextAct4(){act4Idx++;act4Answered=false;renderAct4();}
+setTimeout(initAct4,100);
+
+/* ══════════════════════════════════════════
+   SECTION 6 — QUIZ FINAL
+══════════════════════════════════════════ */
+const QUESTIONS=[
+  {q:"Quels sont les deux paramètres d'entrée d'un algorithme de recherche textuelle ?",opts:["Le texte (n) et le motif (m)","Le texte et son encodage","Le motif et sa longueur","L'alphabet et le motif"],ans:0,expl:"Tout algorithme de recherche textuelle prend en entrée un texte (la chaîne principale, longueur n) et un motif (ce qu'on cherche, longueur m)."},
+  {q:"Pourquoi l'algorithme naïf a-t-il une complexité O(n×m) dans le pire cas ?",opts:["Parce qu'il fait des sauts inutiles","Parce qu'il a deux boucles imbriquées (n positions × m comparaisons chacune)","Parce qu'il utilise trop de mémoire","Parce qu'il lit le texte deux fois"],ans:1,expl:"La boucle externe fait n-m+1 ≈ n itérations. À chaque position, la boucle interne peut faire jusqu'à m comparaisons. Total pire cas : n×m."},
+  {q:"Dans quel sens l'algorithme de Boyer-Moore-Horspool compare-t-il le motif ?",opts:["Gauche vers droite","Du milieu vers les bords","Droite vers gauche","De façon aléatoire"],ans:2,expl:"BMH compare de droite à gauche. Cela permet de détecter rapidement un caractère du texte qui n'est pas dans le motif et de faire un grand saut."},
+  {q:"Que représente la valeur dans la table de décalage de BMH pour un caractère c ?",opts:["Le nombre d'occurrences de c dans le motif","De combien de positions on peut décaler le motif quand on voit c sous la fenêtre","La position de c dans le texte","La longueur du motif moins la position de c"],ans:1,expl:"La table de décalage (bad character table) donne pour chaque caractère le nombre de positions dont on peut déplacer le motif vers la droite. Pour un caractère absent du motif, c'est m (la longueur totale)."},
+  {q:"Quelle est la complexité de l'algorithme KMP dans tous les cas ?",opts:["O(n×m)","O(n²)","O(n+m)","O(m log n)"],ans:2,expl:"KMP est O(n+m) : O(m) pour construire la table des échecs, et O(n) pour la recherche (on ne recule jamais dans le texte, donc on lit chaque caractère au plus une fois)."},
+  {q:"Que fait KMP quand il rencontre un échec à la position j dans le motif ?",opts:["Il repart au début du motif (j=0)","Il recule dans le texte","Il utilise f[j-1] pour reprendre à une position intermédiaire du motif","Il saute m positions dans le texte"],ans:2,expl:"KMP utilise f[j-1] (la failure function) pour reprendre la comparaison depuis un endroit intermédiaire du motif, en profitant des lettres déjà validées. Le texte n'est jamais relu."},
+  {q:"Pour le motif 'ABAB', quelle est la valeur f[3] (last index) de la failure function ?",opts:["0","1","2","3"],ans:2,expl:"f[3] = 2 car le préfixe le plus long qui est aussi suffixe de 'ABAB' est 'AB' (longueur 2). Cela signifie qu'en cas d'échec après 'ABAB', on reprend à j=2."},
+  {q:"Quel algorithme est le plus rapide EN PRATIQUE sur des textes en langage naturel ?",opts:["L'algorithme naïf","Boyer-Moore-Horspool","KMP","Ils sont tous identiques en pratique"],ans:1,expl:"BMH est en pratique le plus rapide sur des textes en langage naturel (grand alphabet, patterns qui ne se répètent pas beaucoup). Sa complexité moyenne est O(n/m), soit encore plus rapide que KMP."},
+  {q:"Pour rechercher 'ABA' dans 'ABABABA', combien l'algo naïf fait-il de comparaisons ?",opts:["5","7","9","12"],ans:2,expl:"Positions 0,1,2,3,4 à explorer. Position 0:'A'='A','B'='B','A'='A'(3), position 1:'A'≠'B'(1), position 2:'A'='A','B'='B','A'='A'(3), position 3:'A'≠'B'(1), position 4:'A'='A','B'='B','A'='A'(3) → 3+1+3+1+3=11... en fait le total dépend. Compte : 3+1+3+1+1=9."},
+  {q:"Quelle structure de données BMH utilise pour stocker la table de décalage ?",opts:["Une liste","Un dictionnaire (hash map)","Un arbre binaire","Une pile"],ans:1,expl:"BMH utilise un dictionnaire (dict en Python) pour associer à chaque caractère sa valeur de décalage. Cela permet un accès en O(1) à chaque lookup."},
+  {q:"Que se passe-t-il si le motif est plus long que le texte ?",opts:["Une erreur se produit","L'algorithme cherche quand même","Il n'y a aucune occurrence possible, on retourne une liste vide","Le texte et le motif sont échangés"],ans:2,expl:"Si m > n, il est impossible que le motif se trouve dans le texte. Les boucles ne s'exécutent pas (range(n-m+1) est vide si n<m) et on retourne [] directement."},
+  {q:"Parmi ces affirmations, laquelle est VRAIE pour KMP ?",opts:["KMP relit certains caractères du texte","KMP peut reculer dans le texte en cas d'échec","KMP ne recule jamais dans le texte, seulement dans le motif","KMP est plus simple à coder que l'algo naïf"],ans:2,expl:"C'est la propriété fondamentale de KMP : l'indice i (dans le texte) n'est jamais décrémenté. On avance toujours. Seul j (dans le motif) peut être réduit grâce à la failure function."},
+];
+
+let qIdx=0,qScore=0,qAnswered=false;
+function quizInit(){qIdx=0;qScore=0;qAnswered=false;renderQ();}
+function renderQ(){
+  if(qIdx>=QUESTIONS.length){renderScore();return;}
+  const q=QUESTIONS[qIdx];
+  document.getElementById('quiz-prog').style.width=Math.round(qIdx/QUESTIONS.length*100)+'%';
+  let dots='';
+  for(let i=0;i<QUESTIONS.length;i++) dots+=`<span class="step-dot ${i<qIdx?'done':i===qIdx?'active':''}"></span>`;
+  dots+=`<span class="step-lbl">${qIdx+1} / ${QUESTIONS.length}</span>`;
+  document.getElementById('quiz-dots').innerHTML=dots;
+  let h=`<p class="quiz-q">${q.q}</p>`;
+  q.opts.forEach((o,i)=>h+=`<button class="quiz-opt" id="qo${i}" onclick="ansQ(${i})">${String.fromCharCode(65+i)}. ${o}</button>`);
+  h+=`<div id="q-fb" class="q-feedback" style="display:none"></div>`;
+  h+=`<div style="text-align:right;margin-top:.75rem"><button class="btn btn-dark" id="q-next" style="display:none" onclick="nextQ()">Suivant →</button></div>`;
+  document.getElementById('quiz-body').innerHTML=h;
+}
+function ansQ(i){
+  if(qAnswered)return;qAnswered=true;
+  const q=QUESTIONS[qIdx];
+  document.querySelectorAll('.quiz-opt').forEach((b,j)=>{
+    if(j===q.ans)b.className='quiz-opt correct';
+    else if(j===i)b.className='quiz-opt wrong';
+    b.disabled=true;
+  });
+  const fb=document.getElementById('q-fb');fb.style.display='';
+  if(i===q.ans){qScore++;fb.className='q-feedback ok';fb.innerHTML='✅ Correct ! '+q.expl;}
+  else{fb.className='q-feedback bad';fb.innerHTML='❌ Faux. '+q.expl;}
+  document.getElementById('q-next').style.display='';
+}
+function nextQ(){qIdx++;qAnswered=false;renderQ();}
+function renderScore(){
+  document.getElementById('quiz-prog').style.width='100%';
+  document.getElementById('quiz-dots').innerHTML='';
+  const pct=Math.round(qScore/QUESTIONS.length*100);
+  let msg='',color='var(--red)';
+  if(pct>=90){msg='Excellent ! Tu maîtrises la recherche textuelle.';color='var(--green)';}
+  else if(pct>=70){msg='Bien ! Relis les parties sur les algorithmes manqués.';color='var(--amber)';}
+  else if(pct>=50){msg='Moyen. Refais les animations et recommence.';color='var(--ink2)';}
+  else{msg='Continue à t\'entraîner, reprends depuis le début.';color='var(--red)';}
+  document.getElementById('quiz-body').innerHTML=`
+    <div class="score-wrap">
+      <div class="score-big" style="color:${color}">${qScore}/${QUESTIONS.length}</div>
+      <div class="score-msg">${msg}</div>
+      <div class="btn-row" style="justify-content:center;margin-top:1.5rem">
+        <button class="btn btn-dark" onclick="quizInit()">↺ Recommencer</button>
+        <button class="btn" onclick="goTo('s0',0)">🏠 Retour au début</button>
+      </div>
+    </div>`;
+}
+
+/* ══════════════════════════════════════════
+   INIT ON LOAD
+══════════════════════════════════════════ */
+window.addEventListener('DOMContentLoaded', () => {
+  initIntro();
+  naiveInit();
+  buildBMHTable();
+  buildKMPTable();
+});
+</script>
+</body>
+</html>
